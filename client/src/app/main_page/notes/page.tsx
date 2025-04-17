@@ -2,12 +2,17 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { User } from "@/types/types";
 
 export default function NotesPage() {
   const router = useRouter();
   const [notes, setNotes] = useState<string>(""); 
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
+
+  useEffect(() => {
+    console.log({ user });
+  }, [user]);
 
   useEffect(() => {
     const userData = localStorage.getItem("user");

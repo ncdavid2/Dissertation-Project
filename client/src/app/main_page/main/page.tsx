@@ -6,10 +6,11 @@ import { useEffect, useState } from "react";
 import { Book, Pencil, FileText } from "lucide-react";
 import LoginImg from "../../../../images/LoginPage.jpg";
 import RegisterButton from "./RegisterButton";
+import { User } from "@/types/types";
 
 export default function Page() {
   const router = useRouter();
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [courses, setCourses] = useState<{ id: string; title: string; description: string; image: string }[]>([]);
   const [activeView, setActiveView] = useState<string | null>(null);

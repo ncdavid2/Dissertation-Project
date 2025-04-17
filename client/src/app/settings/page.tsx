@@ -1,13 +1,13 @@
 "use client";
 
-import Image from "next/image";
 import { Eye, EyeOff } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { User } from "@/types/types";
 
 export default function SettingsPage() {
   const [showPassword, setShowPassword] = useState(false);
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [previewImage, setPreviewImage] = useState("/default-avatar.png");
   const [finishedCourses, setFinishedCourses] = useState<string[]>([]);
 

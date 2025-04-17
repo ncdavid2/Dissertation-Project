@@ -1,10 +1,11 @@
 "use client";
+import { User } from "@/types/types";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function RegisterButton() {
   const router = useRouter();
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");

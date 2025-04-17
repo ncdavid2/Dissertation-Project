@@ -2,17 +2,18 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useSearchParams, useRouter } from "next/navigation";
+import { Page, Question, QuestionInput, Step, User } from "@/types/types";
 
 export default function PageViewer() {
   const { pageID } = useParams();
   const router = useRouter();
 
-  const [page, setPage] = useState<any>(null);
-  const [pages, setPages] = useState<any[]>([]);
+  const [page, setPage] = useState<Page| null>(null);
+  const [pages, setPages] = useState<Page[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [selectedAnswers, setSelectedAnswers] = useState<number[]>([]);
   const [submittedQuestions, setSubmittedQuestions] = useState<boolean[]>([]);
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User| null>(null);
   const [completedPages, setCompletedPages] = useState<string[]>([]);
 
   const searchParams = useSearchParams();
@@ -88,10 +89,15 @@ export default function PageViewer() {
 
         setPage(result.data.page);
         setPages(result.data.page.course.pages);
-      } catch (err: any) {
-        console.error("Page fetch error:", err);
-        setError(err.message || "Failed to load page.");
-      }
+      } catch (err) {
+        if (err instanceof Error) {
+          console.error("Page fetch error:", err);
+          setError(err.message);
+        } else {
+          console.error("Unknown error:", err);
+          setError("Failed to load page.");
+        }
+      }      
     };
 
     fetchPage();
@@ -106,7 +112,7 @@ export default function PageViewer() {
 
   const getNextPageId = () => {
     if (!pages || !page) return null;
-    const currentPageIndex = pages.findIndex((p: any) => p.id === page.id);
+    const currentPageIndex = pages.findIndex((p: Page) => p.id === page.id);
     const nextPageIndex = currentPageIndex + 1;
 
     if (nextPageIndex < pages.length) {
@@ -118,7 +124,7 @@ export default function PageViewer() {
 
   const getPreviousPageId = () => {
     if (!pages || !page) return null;
-    const currentPageIndex = pages.findIndex((p: any) => p.id === page.id);
+    const currentPageIndex = pages.findIndex((p: Page) => p.id === page.id);
     const previousPageIndex = currentPageIndex - 1;
 
     if (previousPageIndex >= 0) {
@@ -166,7 +172,7 @@ export default function PageViewer() {
 
   const allQuestionsSubmitted = () => {
     if (!page?.questions?.length) return true;
-    return page.questions.every((_: any, i: number) => submittedQuestions[i]);
+    return page.questions.every((_: QuestionInput, i: number) => submittedQuestions[i]);
   };  
 
   const nextPageId = getNextPageId();
@@ -208,10 +214,10 @@ export default function PageViewer() {
           <video src={page.videoUrl} controls className="w-full rounded-lg mb-6" />
         )}
 
-        {page.type === "text" && page.steps?.length > 0 && (
+        {page.type === "text" && Array.isArray(page.steps) && page.steps.length > 0 && (
           <div className="space-y-6">
             <h2 className="text-xl font-bold text-purple-300 mb-4">Code Explanation</h2>
-            {page.steps.map((step: any, i: number) => (
+            {page.steps.map((step: Step, i: number) => (
               <div key={i} className="bg-purple-100/10 p-4 rounded-lg">
                 <img
                   src={step.image}
@@ -224,10 +230,10 @@ export default function PageViewer() {
           </div>
         )}
 
-        {page.questions?.length > 0 && (
+        {Array.isArray(page.questions) && page.questions.length > 0 && (
           <div className="space-y-6 mt-8">
             <h2 className="text-xl font-bold text-purple-300 mb-4">Quiz</h2>
-            {page.questions.map((q: any, i: number) => {
+            {page.questions.map((q: Question, i: number) => {
               const isSubmitted = submittedQuestions[i];
               const isCorrect = selectedAnswers[i] === q.correctAnswerIndex;
 

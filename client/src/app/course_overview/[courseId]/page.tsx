@@ -3,15 +3,16 @@
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Star } from "lucide-react";
+import { Comment, Course, Page, User } from "@/types/types";
 
 export default function CoursePage() {
-  const [course, setCourse] = useState<any>(null);
-  const [user, setUser] = useState<any>(null);
+  const [course, setCourse] = useState<Course | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [comment, setComment] = useState("");
   const { courseId } = useParams();
   const [userRating, setUserRating] = useState<number | null>(null);
   const [averageRating, setAverageRating] = useState<number>(0);
-  const [comments, setComments] = useState<any[]>([]);
+  const [comments, setComments] = useState<Comment[]>([]);
   const [completedPageCount, setCompletedPageCount] = useState(0);
   const router = useRouter();
 
@@ -20,7 +21,7 @@ export default function CoursePage() {
     const stored = localStorage.getItem(`completedPages-${user.id}`);
     if (stored) {
       const completed = JSON.parse(stored);
-      setCompletedPageCount(course.pages.filter((p: any) => completed.includes(p.id)).length);
+      setCompletedPageCount(course.pages.filter((p: Page) => completed.includes(p.id)).length);
     }
   }, [user, course]);  
 
@@ -37,7 +38,7 @@ export default function CoursePage() {
   }, [completedPageCount, course, user]);  
   
   const progressPercent =
-    course?.pages?.length > 0 ? (completedPageCount / course.pages.length) * 100 : 0;
+    course?.pages?.length ? (completedPageCount / course.pages.length) * 100 : 0;
 
   useEffect(() => {
     if (courseId) {
@@ -119,7 +120,7 @@ export default function CoursePage() {
           }
         `,
         variables: {
-          courseId: course.id,
+          courseId: course?.id,
           value,
         },
       }),
@@ -159,7 +160,7 @@ export default function CoursePage() {
           }
         `,
         variables: {
-          courseId: course.id,
+          courseId: course?.id,
           text: comment,
         },
       }),

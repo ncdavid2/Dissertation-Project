@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Star } from "lucide-react";
 
 export default function CreateCoursePage() {
   const [courseTitle, setCourseTitle] = useState("");
@@ -12,6 +11,10 @@ export default function CreateCoursePage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const courseId = searchParams.get("courseId");
+
+  useEffect(() => {
+    console.log({ comment, setComment });
+  }, [comment, setComment]);
 
   useEffect(() => {
     if (courseId) {

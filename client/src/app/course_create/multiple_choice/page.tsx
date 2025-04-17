@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Upload, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 
 export default function VideoPageCreation() {
   const [videoFile, setVideoFile] = useState<File | null>(null);
@@ -60,22 +60,6 @@ export default function VideoPageCreation() {
       fetchPage();
     }
   }, [pageId]);
-
-  const convertMP4ToBase64 = (file: File): Promise<string> => {
-    if (file.type !== "video/mp4") {
-      return Promise.reject(new Error("File is not an MP4 video"));
-    }
-  
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => {
-        const base64String = reader.result as string;
-        resolve(base64String);
-      };
-      reader.onerror = (error) => reject(error);
-    });
-  };  
 
   const handleVideoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || e.target.files.length === 0) return;

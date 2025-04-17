@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { ChevronLeft, Play } from "lucide-react";
+import { Play } from "lucide-react";
 
 export default function PageSelection() {
   const [selectedOption, setSelectedOption] = useState<string | null>(null);

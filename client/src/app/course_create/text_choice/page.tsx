@@ -5,12 +5,12 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Plus } from "lucide-react";
 
 type Step = {
-  file: string | null;
+  image: string | null;
   explanation: string;
 };
 
 export default function ScreenshotExplanationPage() {
-  const [steps, setSteps] = useState<Step[]>([{ file: null, explanation: "" }]);
+  const [steps, setSteps] = useState<Step[]>([{ image: null, explanation: "" }]);
   const router = useRouter();
   const searchParams = useSearchParams();
   const courseId = searchParams.get("courseId");
@@ -45,7 +45,7 @@ export default function ScreenshotExplanationPage() {
         if (result.errors) throw new Error(result.errors[0].message);
 
         const { steps } = result.data.page;
-        const formattedSteps = steps.map((step: any) => ({
+        const formattedSteps = steps.map((step: Step) => ({
           file: step.image,
           explanation: step.explanation,
         }));
@@ -65,7 +65,7 @@ export default function ScreenshotExplanationPage() {
     reader.readAsDataURL(file);
     reader.onloadend = () => {
       const updated = [...steps];
-      updated[index].file = reader.result as string;
+      updated[index].image = reader.result as string;
       setSteps(updated);
     };
   };
@@ -77,7 +77,7 @@ export default function ScreenshotExplanationPage() {
   };
 
   const addStep = () => {
-    setSteps([...steps, { file: null, explanation: "" }]);
+    setSteps([...steps, { image: null, explanation: "" }]);
   };
 
   const handleSubmit = async () => {
@@ -119,12 +119,12 @@ export default function ScreenshotExplanationPage() {
             variables: pageId
           ? {
               pageId,
-              image: step.file,
+              image: step.image,
               explanation: step.explanation,
             }
           : {
               courseId,
-              image: step.file,
+              image: step.image,
               explanation: step.explanation,
             },
           }),
@@ -167,10 +167,10 @@ export default function ScreenshotExplanationPage() {
               className="w-full mb-3 p-2 rounded bg-white text-black"
             />
 
-            {step.file && (
+            {step.image && (
               <div className="mb-3">
                 <img
-                  src={step.file}
+                  src={step.image}
                   alt={`Preview Step ${index + 1}`}
                   className="w-full max-h-60 object-contain rounded"
                 />
