@@ -1,23 +1,26 @@
+import express from 'express';
 import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
 import mongoose from "mongoose";
+import dotenv from "dotenv";
 import User from "./models/Users.js";
 import Course from "./models/Courses.js";
-import dotenv from "dotenv";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { v2 as cloudinary } from 'cloudinary';
 
 dotenv.config();
 
+const app = express();
+
+// Setup Cloudinary configuration
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-console.log("MongoDB URI:", process.env.MONGODB_URI);
-
+// Connect to MongoDB
 mongoose
   .connect(process.env.MONGODB_URI)
   .then(() => console.log("MongoDB connected successfully!"))
@@ -499,4 +502,10 @@ const { url } = await startStandaloneServer(server, {
   },
 });
 
-console.log(`Server läuft unter: ${url}`);
+app.use("/", (req, res) => {
+  res.send("Server is running.");
+});
+
+app.listen(5000, () => console.log("Server started at port 5000"));
+
+console.log(`Apollo Server running at ${url}`);
