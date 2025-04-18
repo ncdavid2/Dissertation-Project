@@ -1,24 +1,22 @@
-import express from 'express';
 import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
 import mongoose from "mongoose";
+import User from "./models/Users.js";
+import Course from "./models/Courses.js";
 import dotenv from "dotenv";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { v2 as cloudinary } from 'cloudinary';
 
-import User from "./models/Users.js";
-import Course from "./models/Courses.js";
-
 dotenv.config();
-
-const app = express();
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
+
+console.log("MongoDB URI:", process.env.MONGODB_URI);
 
 mongoose
   .connect(process.env.MONGODB_URI)
@@ -183,8 +181,8 @@ mongoose
 
   extend type Mutation {
     markPageComplete(courseId: ID!, pageId: ID!): Boolean
-  }
-`;
+  }`
+;
 
 const resolvers = {
   Query: {
@@ -501,11 +499,4 @@ const { url } = await startStandaloneServer(server, {
   },
 });
 
-app.use("/", (req, res) => {
-  res.send("Server is running.");
-});
-
-app.listen(5000, () => console.log("Express server running on port 5000"));
-
-console.log(`Apollo Server running at ${url}`);
-
+console.log(`Server läuft unter: ${url}`);
