@@ -11,20 +11,18 @@ import { v2 as cloudinary } from 'cloudinary';
 
 dotenv.config();
 
-const app = express();
-
-// Setup Cloudinary configuration
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// Connect to MongoDB
 mongoose
   .connect(process.env.MONGODB_URI)
   .then(() => console.log("MongoDB connected successfully!"))
   .catch((err) => console.error("MongoDB connection error:", err));
+
+const app = express();
 
   const typeDefs = `
   type Query {
