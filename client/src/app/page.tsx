@@ -1,11 +1,6 @@
-import MainPage from "@/app/main_page/main/page";
+// src/app/page.tsx
+import { redirect } from "next/navigation";
 
-function FirstPage() {
-  return (
-    <div>
-      <MainPage />
-    </div>
-  );
+export default function Home() {
+  redirect("/main_page/main");
 }
-
-export default FirstPage;
