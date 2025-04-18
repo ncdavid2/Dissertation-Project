@@ -1,5 +1,11 @@
-import { redirect } from "next/navigation";
+import MainPage from "@/app/main_page/main/page";
 
-export default function Home() {
-  redirect("/main_page/main");
+function FirstPage() {
+  return (
+    <div>
+      <MainPage />
+    </div>
+  );
 }
+
+export default FirstPage;
