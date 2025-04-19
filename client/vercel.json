@@ -2,7 +2,6 @@
     "$schema": "https://openapi.vercel.sh/vercel.json",
     "buildCommand": "npm run build",
     "devCommand": "npm run dev",
-    "outputDirectory": "build",
-    "relatedProjects": ["prj_hEuXWK2rPISrvk1lXlIF8vsToUh2"]
-}
+    "outputDirectory": ".next"
+  }
   
