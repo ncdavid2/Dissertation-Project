@@ -472,15 +472,14 @@ const resolvers = {
   },
 };
 
-
-
 const server = new ApolloServer({
   typeDefs,
   resolvers,
-  cors: {
-    origin: '*',
-  },
-  context: async ({ req }) => {
+});
+
+
+export default startServerAndCreateNextHandler(server, {
+  context: async (req, res) => {
     const authHeader = req.headers.authorization || '';
     const token = authHeader.replace('Bearer ', '');
 
@@ -490,8 +489,10 @@ const server = new ApolloServer({
     } catch (err) {
       return {};
     }
-  }
+  },
+  cors: {
+    origin: "https://dissertation-project-client.vercel.app",
+    credentials: true,
+  },
 });
 
-
-export default startServerAndCreateNextHandler(server);
