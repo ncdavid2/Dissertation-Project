@@ -1,4 +1,26 @@
-export const typeDefs = `
+import { ApolloServer } from '@apollo/server';
+import { startServerAndCreateNextHandler } from '@as-integrations/next';
+import mongoose from 'mongoose';
+import User from '../models/Users.js';
+import Course from '../models/Courses.js';
+import dotenv from 'dotenv';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import { v2 as cloudinary } from 'cloudinary';
+
+dotenv.config();
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+mongoose.connect(process.env.MONGODB_URI)
+  .then(() => console.log("MongoDB connected successfully!"))
+  .catch((err) => console.error("MongoDB connection error:", err));
+
+const typeDefs = `
   type Query {
     getUsers: [User]
     getUserByID(id: ID!): User
@@ -159,7 +181,7 @@ export const typeDefs = `
   }`
 ;
 
-export const resolvers = {
+const resolvers = {
   Query: {
     getUsers: async () => await User.find(),
     getUserByID: async (_, args) => await User.findById(args.id),
@@ -449,3 +471,10 @@ export const resolvers = {
     },    
   },
 };
+
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+});
+
+export default startServerAndCreateNextHandler(server);
