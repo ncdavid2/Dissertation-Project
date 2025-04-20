@@ -1,11 +1,16 @@
-import { ApolloServer } from '@apollo/server';
-import { startServerAndCreateNextHandler } from '@as-integrations/next';
+import express from 'express';
+import http from 'http';
+import cors from 'cors';
+import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+import { ApolloServer } from '@apollo/server';
+import { expressMiddleware } from '@apollo/server/express4';
+import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
+import jwt from 'jsonwebtoken';
+
 import User from '../models/Users.js';
 import Course from '../models/Courses.js';
-import dotenv from 'dotenv';
-import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
 import { v2 as cloudinary } from 'cloudinary';
 
 dotenv.config();
@@ -472,37 +477,40 @@ const resolvers = {
   },
 };
 
+const app = express();
+const httpServer = http.createServer(app);
+
 const server = new ApolloServer({
   typeDefs,
   resolvers,
-  context: async ({ req }) => {
-    const authHeader = req.headers.authorization || '';
-    const token = authHeader.replace('Bearer ', '');
-
-    try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      return { userId: decoded.userId };
-    } catch (err) {
-      return {};
-    }
-  }
+  plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
 });
 
-export default startServerAndCreateNextHandler(server, {
-  context: async (req) => {
-    const authHeader = req.headers.authorization || '';
-    const token = authHeader.replace('Bearer ', '');
+await server.start();
 
-    try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      return { userId: decoded.userId };
-    } catch (err) {
-      return {};
-    }
-  },
-  cors: {
+app.use(
+  cors({
     origin: "https://dissertation-project-client-i7rmdet3u-ncdavid-webdes-projects.vercel.app",
     credentials: true,
-  },
-});
+  })
+);
 
+app.use(
+  bodyParser.json(),
+  expressMiddleware(server, {
+    context: async ({ req }) => {
+      const authHeader = req.headers.authorization || '';
+      const token = authHeader.replace('Bearer ', '');
+
+      try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        return { userId: decoded.userId };
+      } catch {
+        return {};
+      }
+    }
+  })
+);
+
+await new Promise((resolve) => httpServer.listen({ port: 4000 }, resolve));
+console.log('🚀 Server ready at http://localhost:4000');
