@@ -477,7 +477,6 @@ const server = new ApolloServer({
   resolvers,
 });
 
-
 export default startServerAndCreateNextHandler(server, {
   context: async (req, res) => {
     const authHeader = req.headers.authorization || '';
@@ -491,8 +490,14 @@ export default startServerAndCreateNextHandler(server, {
     }
   },
   cors: {
-    origin: "https://dissertation-project-client.vercel.app",
+    origin: [
+      "https://dissertation-project-client.vercel.app",
+      "https://dissertation-project-client-bckn2ae3u-ncdavid-webdes-projects.vercel.app"
+    ],
     credentials: true,
+    methods: ["POST", "GET", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   },
 });
+
 
