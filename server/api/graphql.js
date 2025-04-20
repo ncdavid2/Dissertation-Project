@@ -488,10 +488,21 @@ const server = new ApolloServer({
   }
 });
 
-server.applyMiddleware({
-  app,
-  path: "/",
-  cors: { origin: "*", credentials: true }
+export default startServerAndCreateNextHandler(server, {
+  context: async (req) => {
+    const authHeader = req.headers.authorization || '';
+    const token = authHeader.replace('Bearer ', '');
+
+    try {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      return { userId: decoded.userId };
+    } catch (err) {
+      return {};
+    }
+  },
+  cors: {
+    origin: "https://dissertation-project-client-i7rmdet3u-ncdavid-webdes-projects.vercel.app",
+    credentials: true,
+  },
 });
 
-export default startServerAndCreateNextHandler(server);
