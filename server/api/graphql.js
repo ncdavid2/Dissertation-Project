@@ -485,32 +485,13 @@ const server = new ApolloServer({
   resolvers,
   plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
 });
-
 await server.start();
 
 app.use(
-  cors({
-    origin: "https://dissertation-project-client-i7rmdet3u-ncdavid-webdes-projects.vercel.app",
-    credentials: true,
-  })
-);
-
-app.use(
+  cors(),
   bodyParser.json(),
-  expressMiddleware(server, {
-    context: async ({ req }) => {
-      const authHeader = req.headers.authorization || '';
-      const token = authHeader.replace('Bearer ', '');
-
-      try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        return { userId: decoded.userId };
-      } catch {
-        return {};
-      }
-    }
-  })
+  expressMiddleware(server),
 );
 
 await new Promise((resolve) => httpServer.listen({ port: 4000 }, resolve));
-console.log('🚀 Server ready at http://localhost:4000');
+console.log("🚀 Server ready at http://localhost:4000");
