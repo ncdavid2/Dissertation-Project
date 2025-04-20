@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { User } from "@/types/types";
+import config from "../../../../default/config";
 
 export default function NotesPage() {
   const router = useRouter();
@@ -26,7 +27,7 @@ export default function NotesPage() {
 
   const fetchUserNotes = async (id: string) => {
     try {
-      const response = await fetch("http://localhost:4000/graphql", {
+      const response = await fetch(config.BACKEND_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -51,7 +52,7 @@ export default function NotesPage() {
     if (!userId) return;
 
     try {
-      const response = await fetch("http://localhost:4000/graphql", {
+      const response = await fetch(config.BACKEND_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

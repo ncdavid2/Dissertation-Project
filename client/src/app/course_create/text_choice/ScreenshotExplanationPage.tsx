@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Plus } from "lucide-react";
+import config from "../../../../default/config";
 
 type Step = {
   image: string | null;
@@ -21,7 +22,7 @@ export default function ScreenshotExplanationPage() {
 
     const fetchPage = async () => {
       try {
-        const response = await fetch("http://localhost:4000/graphql", {
+        const response = await fetch(config.BACKEND_URL, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -108,7 +109,7 @@ export default function ScreenshotExplanationPage() {
               }
             `;
 
-        const response = await fetch("http://localhost:4000/graphql", {
+        const response = await fetch(config.BACKEND_URL, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

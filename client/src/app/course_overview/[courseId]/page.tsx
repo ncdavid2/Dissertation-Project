@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Star } from "lucide-react";
 import { Comment, Course, Page, User } from "@/types/types";
+import config from "../../../../default/config";
 
 export default function CoursePage() {
   const [course, setCourse] = useState<Course | null>(null);
@@ -105,7 +106,7 @@ export default function CoursePage() {
   const handleRate = async (value: number) => {
     setUserRating(value);
   
-    await fetch("http://localhost:4000/graphql", {
+    await fetch(config.BACKEND_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -138,7 +139,7 @@ export default function CoursePage() {
   const handleAddComment = async () => {
     if (!comment.trim()) return;
   
-    const res = await fetch("http://localhost:4000/graphql", {
+    const res = await fetch(config.BACKEND_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Plus } from "lucide-react";
+import config from "../../../../default/config";
 
 export default function VideoPageCreation() {
   const [videoFile, setVideoFile] = useState<File | null>(null);
@@ -23,7 +24,7 @@ export default function VideoPageCreation() {
     if (pageId) {
       const fetchPage = async () => {
         try {
-          const response = await fetch("http://localhost:4000/graphql", {
+          const response = await fetch(config.BACKEND_URL, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -141,7 +142,7 @@ export default function VideoPageCreation() {
         ? { pageId, videoUrl: videoUrlToUse, questions }
         : { courseId, videoUrl: videoUrlToUse, questions };
   
-      const response = await fetch("http://localhost:4000/graphql", {
+      const response = await fetch(config.BACKEND_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

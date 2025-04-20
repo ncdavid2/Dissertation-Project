@@ -7,6 +7,7 @@ import { Book, Pencil, FileText } from "lucide-react";
 import LoginImg from "../../../../images/LoginPage.jpg";
 import RegisterButton from "./RegisterButton";
 import { User } from "@/types/types";
+import config from "../../../../default/config";
 
 export default function Page() {
   const router = useRouter();
@@ -30,7 +31,7 @@ export default function Page() {
       setUser(JSON.parse(storedUser));
     }
 
-    fetch("http://localhost:4000/graphql", {
+    fetch(config.BACKEND_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ query: `{ getCourses { id title description image } }` }),

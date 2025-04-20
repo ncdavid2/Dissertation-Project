@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Eye, EyeOff, ArrowLeft } from "lucide-react";
 import Image from "next/image";
 import LoginImg from "../../../../images/LoginPage.jpg";
+import config from "../../../../default/config";
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -42,7 +43,7 @@ export default function LoginPage() {
     const { email, password } = formData;
 
     try {
-      const response = await fetch("http://localhost:4000/graphql", {
+      const response = await fetch(config.BACKEND_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useSearchParams, useRouter } from "next/navigation";
 import { Page, Question, QuestionInput, Step, User } from "@/types/types";
+import config from "../../../../default/config";
 
 export default function PageViewer() {
   const { pageID } = useParams();
@@ -48,7 +49,7 @@ export default function PageViewer() {
 
     const fetchPage = async () => {
       try {
-        const response = await fetch("http://localhost:4000/graphql", {
+        const response = await fetch(config.BACKEND_URL, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

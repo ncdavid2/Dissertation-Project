@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import config from "../../../../default/config";
 
 type Question = {
   question: string;
@@ -16,7 +17,7 @@ export default function PracticePage() {
   const router = useRouter();
 
   useEffect(() => {
-    fetch("http://localhost:4000/graphql", {
+    fetch(config.BACKEND_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import config from "../../../../default/config";
 
 export default function CreateCoursePage() {
   const [courseTitle, setCourseTitle] = useState("");
@@ -20,7 +21,7 @@ export default function CreateCoursePage() {
     if (courseId) {
       const fetchCourse = async () => {
         try {
-          const response = await fetch("http://localhost:4000/graphql", {
+          const response = await fetch(config.BACKEND_URL, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
