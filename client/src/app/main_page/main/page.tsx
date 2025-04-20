@@ -34,9 +34,11 @@ export default function Page() {
     console.log(config.BACKEND_URL);
     fetch(config.BACKEND_URL, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      mode: 'no-cors',
-      body: JSON.stringify({ query: `{ getCourses { id title description image } }` }),
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
+      body: JSON.stringify({ query: `{ getCourses { id title description image } }` })
     })
       .then((res) => res.json())
       .then((data) => setCourses(data.data.getCourses))
