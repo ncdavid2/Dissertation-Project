@@ -475,6 +475,18 @@ const resolvers = {
 const server = new ApolloServer({
   typeDefs,
   resolvers,
+  context: async ({ req }) => {
+    const authHeader = req.headers.authorization || '';
+    const token = authHeader.replace('Bearer ', '');
+
+    try {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      return { userId: decoded.userId };
+    } catch (err) {
+      return {};
+    }
+  }
 });
+
 
 export default startServerAndCreateNextHandler(server);
