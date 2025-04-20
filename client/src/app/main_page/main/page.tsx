@@ -35,6 +35,7 @@ export default function Page() {
     fetch(config.BACKEND_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
+      mode: 'no-cors',
       body: JSON.stringify({ query: `{ getCourses { id title description image } }` }),
     })
       .then((res) => res.json())
