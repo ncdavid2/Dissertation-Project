@@ -1,4 +1,4 @@
-import { ApolloServer } from "@apollo/server";
+/*import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
 import mongoose from "mongoose";
 import User from "./models/Users.js";
@@ -499,4 +499,4 @@ const { url } = await startStandaloneServer(server, {
   },
 });
 
-console.log(`Server läuft unter: ${url}`);
+console.log(`Server läuft unter: ${url}`);*/

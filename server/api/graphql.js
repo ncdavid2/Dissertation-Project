@@ -488,4 +488,10 @@ const server = new ApolloServer({
   }
 });
 
+server.applyMiddleware({
+  app,
+  path: "/",
+  cors: { origin: "*", credentials: true }
+});
+
 export default startServerAndCreateNextHandler(server);
