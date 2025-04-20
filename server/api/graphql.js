@@ -1,15 +1,11 @@
-import express from 'express';
-import http from 'http';
-import cors from 'cors';
-import bodyParser from 'body-parser';
-import mongoose from 'mongoose';
-import dotenv from 'dotenv';
 import { ApolloServer } from '@apollo/server';
-import { expressMiddleware } from '@apollo/server/express4';
-import jwt from 'jsonwebtoken';
-
+import { startServerAndCreateNextHandler } from '@as-integrations/next';
+import mongoose from 'mongoose';
 import User from '../models/Users.js';
 import Course from '../models/Courses.js';
+import dotenv from 'dotenv';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 import { v2 as cloudinary } from 'cloudinary';
 
 dotenv.config();
@@ -476,12 +472,14 @@ const resolvers = {
   },
 };
 
-const app = express();
-const httpServer = http.createServer(app);
+
 
 const server = new ApolloServer({
   typeDefs,
   resolvers,
+  cors: {
+    origin: '*',
+  },
   context: async ({ req }) => {
     const authHeader = req.headers.authorization || '';
     const token = authHeader.replace('Bearer ', '');
@@ -495,13 +493,5 @@ const server = new ApolloServer({
   }
 });
 
-await server.start();
 
-app.use(
-  cors({ origin: '*' }),
-  bodyParser.json(),
-  expressMiddleware(server),
-);
-
-await new Promise((resolve) => httpServer.listen({ port: 4000 }, resolve));
-console.log("🚀 Server ready at http://localhost:4000");
+export default startServerAndCreateNextHandler(server);
