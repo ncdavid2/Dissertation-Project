@@ -488,5 +488,4 @@ const server = new ApolloServer({
   }
 });
 
-
 export default startServerAndCreateNextHandler(server);
