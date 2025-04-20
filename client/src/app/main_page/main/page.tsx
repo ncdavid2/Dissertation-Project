@@ -31,6 +31,7 @@ export default function Page() {
       setUser(JSON.parse(storedUser));
     }
 
+    console.log(config.BACKEND_URL);
     fetch(config.BACKEND_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
