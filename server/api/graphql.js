@@ -475,10 +475,10 @@ const resolvers = {
 const server = new ApolloServer({
   typeDefs,
   resolvers,
-});
-
-export default startServerAndCreateNextHandler(server, {
-  context: async (req, res) => {
+  cors: {
+    origin: '*'
+  },
+  context: async ({ req }) => {
     const authHeader = req.headers.authorization || '';
     const token = authHeader.replace('Bearer ', '');
 
@@ -488,10 +488,8 @@ export default startServerAndCreateNextHandler(server, {
     } catch (err) {
       return {};
     }
-  },
-  cors: {
-    origin: '*',
-    credentials: true,
-  },
+  }
 });
 
+
+export default startServerAndCreateNextHandler(server);
