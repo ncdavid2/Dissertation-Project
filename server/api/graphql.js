@@ -472,25 +472,24 @@ const resolvers = {
   },
 };
 
-const app = express();
-
-app.use(
-  cors({
-    origin: "https://dissertation-project-client.vercel.app",
-    credentials: true,
-  })
-);
-app.use(json());
-
 const server = new ApolloServer({
   typeDefs,
   resolvers,
+  cors: {
+    origin: '*'
+  },
+  context: async ({ req }) => {
+    const authHeader = req.headers.authorization || '';
+    const token = authHeader.replace('Bearer ', '');
+
+    try {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      return { userId: decoded.userId };
+    } catch (err) {
+      return {};
+    }
+  }
 });
 
-await server.start();
 
-app.use("/api/graphql", expressMiddleware(server));
-
-app.listen(4000, () => {
-  console.log("🚀 Server running on http://localhost:4000/api/graphql");
-});
+export default startServerAndCreateNextHandler(server);
