@@ -82,9 +82,11 @@ export default function SettingsPage() {
         }),
       });
 
+      console.log("Token: " + token);
       const data = await response.json();
 
       if (data.errors) {
+        console.log("Token: " + token);
         alert("Error updating profile: " + data.errors[0].message);
         return;
       }
