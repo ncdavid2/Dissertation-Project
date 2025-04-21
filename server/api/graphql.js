@@ -488,8 +488,8 @@ export default async function handler(req, res) {
   }
 
   const apolloHandler = startServerAndCreateNextHandler(server, {
-    context: async ({ req }) => {
-      const authHeader = req.headers.authorization || '';
+    context: async (ctx) => {
+      const authHeader = ctx.req.headers.authorization || '';
       const token = authHeader.replace('Bearer ', '');
 
       try {
