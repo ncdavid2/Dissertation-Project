@@ -472,12 +472,11 @@ const resolvers = {
   },
 };
 
+const { ApolloServer } = require("apollo-server");
+
 const server = new ApolloServer({
   typeDefs,
   resolvers,
-  cors: {
-    origin: '*'
-  },
   context: async ({ req }) => {
     const authHeader = req.headers.authorization || '';
     const token = authHeader.replace('Bearer ', '');
@@ -491,5 +490,13 @@ const server = new ApolloServer({
   }
 });
 
+server.listen({
+  cors: {
+    origin: "https://dissertation-project-client.vercel.app", // your frontend domain
+    credentials: true,
+  },
+}).then(({ url }) => {
+  console.log(`🚀 Server ready at ${url}`);
+});
 
 export default startServerAndCreateNextHandler(server);
