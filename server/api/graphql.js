@@ -490,7 +490,7 @@ export default startServerAndCreateNextHandler(server, {
     }
   },
   cors: {
-    origin: 'https://dissertation-project-client.vercel.app/',
+    origin: '*',
     credentials: true,
   },
 });
