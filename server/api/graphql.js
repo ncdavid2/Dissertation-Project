@@ -475,6 +475,17 @@ const resolvers = {
 const server = new ApolloServer({
   typeDefs,
   resolvers,
+  context: async ({ req }) => {
+    const authHeader = req.headers.authorization || '';
+    const token = authHeader.replace('Bearer ', '');
+
+    try {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      return { userId: decoded.userId };
+    } catch (err) {
+      return {};
+    }
+  }
 });
 
 export default async function handler(req, res) {
@@ -487,19 +498,7 @@ export default async function handler(req, res) {
     return;
   }
 
-  const apolloHandler = startServerAndCreateNextHandler(server, {
-    context: async (ctx) => {
-      const authHeader = ctx.req.headers.authorization || '';
-      const token = authHeader.replace('Bearer ', '');
-
-      try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        return { userId: decoded.userId };
-      } catch (err) {
-        return {};
-      }
-    }
-  });
+  const apolloHandler = startServerAndCreateNextHandler(server);
 
   return apolloHandler(req, res);
 }
