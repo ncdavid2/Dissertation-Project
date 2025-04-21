@@ -45,7 +45,7 @@ export default function CoursePage() {
     if (courseId) {
       const fetchCourseData = async () => {
         try {
-          const response = await fetch(`http://localhost:4000/graphql`, {
+          const response = await fetch(config.BACKEND_URL, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
