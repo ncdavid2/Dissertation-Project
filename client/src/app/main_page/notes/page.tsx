@@ -29,7 +29,9 @@ export default function NotesPage() {
     try {
       const response = await fetch(config.BACKEND_URL, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json" 
+        },
         body: JSON.stringify({
           query: `
             query {

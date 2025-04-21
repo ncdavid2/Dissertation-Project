@@ -100,7 +100,7 @@ export default function LoginPage() {
               <div className="space-y-2 text-center md:text-left">
                 <h1 className="text-3xl font-bold text-white">Login with email</h1>
                 <p className="text-sm text-gray-300">
-                  Dont have an account?{""}
+                  Dont have an account?{" "}
                   <button
                     onClick={() => router.push("/authentication/register")}
                     className="text-[#B66EFC] hover:underline"
