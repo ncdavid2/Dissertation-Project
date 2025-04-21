@@ -475,21 +475,31 @@ const resolvers = {
 const server = new ApolloServer({
   typeDefs,
   resolvers,
-  cors: {
-    origin: '*'
-  },
-  context: async ({ req }) => {
-    const authHeader = req.headers.authorization || '';
-    const token = authHeader.replace('Bearer ', '');
-
-    try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      return { userId: decoded.userId };
-    } catch (err) {
-      return {};
-    }
-  }
 });
 
+export default async function handler(req, res) {
+  res.setHeader('Access-Control-Allow-Origin', process.env.PRODUCTION_URL);
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
-export default startServerAndCreateNextHandler(server);
+  if (req.method === 'OPTIONS') {
+    res.status(200).end();
+    return;
+  }
+
+  const apolloHandler = startServerAndCreateNextHandler(server, {
+    context: async ({ req }) => {
+      const authHeader = req.headers.authorization || '';
+      const token = authHeader.replace('Bearer ', '');
+
+      try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        return { userId: decoded.userId };
+      } catch (err) {
+        return {};
+      }
+    }
+  });
+
+  return apolloHandler(req, res);
+}
