@@ -20,10 +20,17 @@ export default function Page() {
   const COURSES_PER_PAGE = 6;
   const totalPages = Math.ceil(courses.length / COURSES_PER_PAGE);
 
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const filteredCourses = courses.filter(course =>
+    course.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+  
   const paginatedCourses =
     activeView === "courses"
-      ? courses
-      : courses.slice(currentPage * COURSES_PER_PAGE, currentPage * COURSES_PER_PAGE + COURSES_PER_PAGE);
+      ? filteredCourses
+      : filteredCourses.slice(currentPage * COURSES_PER_PAGE, currentPage * COURSES_PER_PAGE + COURSES_PER_PAGE);
+  
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -97,6 +104,20 @@ export default function Page() {
           ) : (
             <RegisterButton />
           )}
+        </div>
+
+        {/* Search bar */}
+        <div className="absolute left-1/2 transform -translate-x-1/2 w-full sm:w-1/2">
+          <input
+            type="text"
+            placeholder="Search for a programming course (e.g. Python, C#)..."
+            value={searchQuery}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              setCurrentPage(0);
+            }}
+            className="w-full px-3 py-2 rounded-lg bg-purple-900 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-400"
+          />
         </div>
 
         {user?.role === "teacher" && (
