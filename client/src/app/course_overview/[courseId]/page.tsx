@@ -218,7 +218,7 @@ export default function CoursePage() {
         <div className="bg-white rounded-lg overflow-hidden mb-6">
           <div
             className="aspect-video w-full bg-cover"
-            style={{ backgroundImage: `url(${course.image || "/placeholder.svg"})` }}
+            style={{ backgroundImage: `url(${course.image})` }}
           ></div>
         </div>
 
