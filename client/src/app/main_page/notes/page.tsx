@@ -53,6 +53,12 @@ export default function NotesPage() {
   const handleSave = async () => {
     if (!userId) return;
 
+    const token = localStorage.getItem("token");
+    if (!token) {
+      console.error("No auth token found");
+      return;
+    }
+
     try {
       const response = await fetch(config.BACKEND_URL, {
         method: "POST",
