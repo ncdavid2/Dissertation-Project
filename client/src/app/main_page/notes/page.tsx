@@ -38,17 +38,12 @@ export default function NotesPage() {
         },
         body: JSON.stringify({
           query: `
-            mutation updateUser($id: ID!, $notes: String) {
-              updateUser(id: $id, notes: $notes) {
-                id
+            query {
+              getUserByID(id: "${id}") {
                 notes
               }
             }
           `,
-          variables: {
-            id: userId,
-            notes,
-          },
         }),
       });
 
