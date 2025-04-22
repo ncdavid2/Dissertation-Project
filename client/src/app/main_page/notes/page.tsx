@@ -27,14 +27,17 @@ export default function NotesPage() {
 
   const fetchUserNotes = async (id: string) => {
     try {
+      const token = localStorage.getItem("token");
+
       const response = await fetch(config.BACKEND_URL, {
         method: "POST",
         headers: { 
-          "Content-Type": "application/json" 
+          "Content-Type": "application/json",
+          ...(token && { Authorization: `Bearer ${token}` }),
         },
         body: JSON.stringify({
           query: `
-            query {
+            query getUserByID($id: ID!) {
               getUserByID(id: "${id}") {
                 notes
               }
