@@ -9,6 +9,7 @@ import jwt from 'jsonwebtoken';
 import { v2 as cloudinary } from 'cloudinary';
 
 dotenv.config();
+console.log("JWT_SECRET from env:", process.env.JWT_SECRET);
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -279,20 +280,29 @@ const resolvers = {
     },
 
     login: async (_, { email, password }) => {
+      console.log("Login attempt:", { email, password });
       const user = await User.findOne({ email });
+      console.log("User found:", user);
 
       if (!user) {
+        console.log("User not found for email:", email);
         throw new Error("User not found");
       }
 
       const isValidPassword = await bcrypt.compare(password, user.password);
+      console.log("Password valid:", isValidPassword);
       if (!isValidPassword) {
         throw new Error("Invalid password");
       }
 
+      console.log("JWT payload:", { userId: user.id });
+      console.log("JWT secret used:", process.env.JWT_SECRET);
+
       const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, {
         expiresIn: "1h",
       });
+
+      console.log("Generated token:", token);
 
       return { token, user };
     },
@@ -477,12 +487,17 @@ const server = new ApolloServer({
   resolvers,
   context: async ({ req }) => {
     const authHeader = req.headers.authorization || '';
+    console.log("Authorization header:", authHeader);
+
     const token = authHeader.replace('Bearer ', '');
+    console.log("Extracted token:", token);
 
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      console.log("Decoded JWT:", decoded);
       return { userId: decoded.userId };
     } catch (err) {
+      console.log("JWT verification error:", err);
       return {};
     }
   }
