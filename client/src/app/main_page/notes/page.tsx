@@ -28,6 +28,7 @@ export default function NotesPage() {
   const fetchUserNotes = async (id: string) => {
     try {
       const token = localStorage.getItem("token");
+      console.log("Token from localStorage:", token);
 
       const response = await fetch(config.BACKEND_URL, {
         method: "POST",
@@ -37,12 +38,17 @@ export default function NotesPage() {
         },
         body: JSON.stringify({
           query: `
-            query {
-              getUserByID(id: "${id}") {
+            mutation updateUser($id: ID!, $notes: String) {
+              updateUser(id: $id, notes: $notes) {
+                id
                 notes
               }
             }
           `,
+          variables: {
+            id: userId,
+            notes,
+          },
         }),
       });
 
