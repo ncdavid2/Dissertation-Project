@@ -33,11 +33,11 @@ export default function NotesPage() {
         method: "POST",
         headers: { 
           "Content-Type": "application/json",
-          ...(token && { Authorization: `Bearer ${token}` }),
+          Authorization: token ? `Bearer ${token}` : "",
         },
         body: JSON.stringify({
           query: `
-            query getUserByID($id: ID!) {
+            query {
               getUserByID(id: "${id}") {
                 notes
               }
