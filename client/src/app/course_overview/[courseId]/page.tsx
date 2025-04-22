@@ -138,12 +138,14 @@ export default function CoursePage() {
   
   const handleAddComment = async () => {
     if (!comment.trim()) return;
+
+    const token = localStorage.getItem("token");
   
     const res = await fetch(config.BACKEND_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        Authorization: token ? `Bearer ${token}` : "",
       },
       body: JSON.stringify({
         query: `
