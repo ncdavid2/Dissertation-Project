@@ -503,6 +503,8 @@ const server = new ApolloServer({
   }
 });
 
+const apolloHandler = startServerAndCreateNextHandler(server);
+
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', process.env.PRODUCTION_URL);
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
@@ -512,8 +514,6 @@ export default async function handler(req, res) {
     res.status(200).end();
     return;
   }
-
-  const apolloHandler = startServerAndCreateNextHandler(server);
 
   return apolloHandler(req, res);
 }
