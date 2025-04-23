@@ -17,10 +17,8 @@ export default function NotesPage() {
 
   useEffect(() => {
     const userData = localStorage.getItem("user");
-    console.log("userData from localStorage:", userData);
     if (userData) {
       const parsed = JSON.parse(userData);
-      console.log("Parsed user data:", parsed);
       setUserId(parsed.id);
       setUser(parsed);
       fetchUserNotes(parsed.id);
@@ -48,9 +46,8 @@ export default function NotesPage() {
           `,
         }),
       });
-      console.log("Request headers:", response.headers);
+
       const result = await response.json();
-      console.log("Get user by id result:", result);
       setNotes(result.data.getUserByID?.notes || "");
     } catch (error) {
       console.error("Error loading notes:", error);
@@ -90,7 +87,6 @@ export default function NotesPage() {
       });
 
       const result = await response.json();
-      console.log("Update user result:", result);
       if (result.errors) {
         console.error(result.errors);
         return;
