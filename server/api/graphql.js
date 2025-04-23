@@ -179,6 +179,10 @@ const typeDefs = `
 
   extend type Mutation {
     markPageComplete(courseId: ID!, pageId: ID!): Boolean
+  }
+    
+  type Mutation {
+    deleteCourse(id: ID!): Boolean!
   }`
 ;
 
@@ -478,7 +482,25 @@ const resolvers = {
     
       await user.save();
       return true;
-    },    
+    },  
+    
+    deleteCourse: async (_, { id }, { userId }) => {
+      if (!userId) {
+        throw new Error("Unauthorized");
+      }
+        
+      const user = await User.findById(userId);
+      if (!user || user.role !== "teacher") {
+        throw new Error("Only teachers can delete courses");
+      }
+        
+      const deletedCourse = await Course.findByIdAndDelete(id);
+      if (!deletedCourse) {
+        throw new Error("Course not found");
+      }
+        
+      return true;
+    },
   },
 };
 

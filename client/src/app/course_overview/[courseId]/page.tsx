@@ -16,6 +16,8 @@ export default function CoursePage() {
   const [comments, setComments] = useState<Comment[]>([]);
   const [completedPageCount, setCompletedPageCount] = useState(0);
   const router = useRouter();
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteInput, setDeleteInput] = useState("");
 
   useEffect(() => {
     if (!user || !course) return;
@@ -179,6 +181,37 @@ export default function CoursePage() {
     }
   };
   
+  const handleDelete = async () => {
+    if (!course?.id) return;
+  
+    try {
+      const res = await fetch(config.BACKEND_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify({
+          query: `
+            mutation DeleteCourse($id: ID!) {
+              deleteCourse(id: $id)
+            }
+          `,
+          variables: { id: course.id },
+        }),
+      });
+  
+      const data = await res.json();
+  
+      if (data.errors) {
+        console.error(data.errors[0].message);
+      } else {
+        router.push("/");
+      }
+    } catch (error) {
+      console.error("Failed to delete course:", error);
+    }
+  };  
 
   if (!course) {
     return (
@@ -299,7 +332,6 @@ export default function CoursePage() {
             </div>
           ))}
         </div>
-
         <div>
           <div className="flex items-center gap-3 mt-4">
             <input
@@ -311,13 +343,57 @@ export default function CoursePage() {
             />
             <button
               onClick={handleAddComment}
-              className="bg-purple-500 text-white px-4 py-2 rounded"
+              className="bg-purple-500 text-white px-4 py-2 rounded hover:bg-purple-600"
             >
               Post
             </button>
           </div>
         </div>
+        {user?.role === "teacher" && (
+          <button
+            onClick={() => setShowDeleteModal(true)}
+            className="bg-red-600 hover:bg-red-700 text-white rounded-full px-6 py-2"
+          >
+            Delete Course
+          </button>
+        )}  
       </div>
+      {showDeleteModal && (
+        <div className="fixed inset-0 bg-[#3b2e4a] bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+            <h3 className="text-lg font-bold mb-2 text-red-600">Delete Course</h3>
+            <p className="mb-4 text-black">
+              Are you sure you want to delete <strong>{course.title}</strong>? This action cannot be undone.<br />
+              Type <strong>Confirm</strong> to proceed.
+            </p>
+            <input
+              type="text"
+              className="border p-2 w-full mb-4 text-black"
+              placeholder="Type Confirm"
+              value={deleteInput}
+              onChange={(e) => setDeleteInput(e.target.value)}
+            />
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={() => {
+                  setShowDeleteModal(false);
+                  setDeleteInput("");
+                }}
+                className="px-4 py-2 bg-purple-500 rounded hover:bg-purple-600"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDelete}
+                disabled={deleteInput !== "Confirm"}
+                className="px-4 py-2 bg-red-600 text-white rounded disabled:opacity-50"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
