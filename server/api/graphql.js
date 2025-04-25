@@ -508,26 +508,27 @@ const resolvers = {
 const server = new ApolloServer({
   typeDefs,
   resolvers,
-  context: async ({ req }) => {
-    const authHeader = req.headers.authorization || '';
-    console.log("Authorization header:", authHeader);
-
-    const token = authHeader.replace('Bearer ', '');
-    console.log("Extracted token:", token);
-
-    try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      console.log("Decoded JWT:", decoded);
-      console.log("JWT_SECRET inside context:", process.env.JWT_SECRET);
-      return { userId: decoded.userId };
-    } catch (err) {
-      console.log("JWT verification error:", err);
-      return {};
-    }
-  }
 });
 
-const apolloHandler = startServerAndCreateNextHandler(server);
+const context = async ( req, res ) => {
+  const authHeader = req.headers.authorization || '';
+  console.log("Authorization header:", authHeader);
+
+  const token = authHeader.replace('Bearer ', '');
+  console.log("Extracted token:", token);
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    console.log("Decoded JWT:", decoded);
+    console.log("JWT_SECRET inside context:", process.env.JWT_SECRET);
+    return { userId: decoded.userId };
+  } catch (err) {
+    console.log("JWT verification error:", err);
+    return {};
+  }
+}
+
+const apolloHandler = startServerAndCreateNextHandler(server, { context });
 
 export default async function handler(req, res) {
   console.log("Request received:", req.method, req.url);
