@@ -31,12 +31,21 @@ export default function CoursePage() {
   useEffect(() => {
     if (user && course && completedPageCount === course.pages.length) {
       const finishedCoursesKey = `finishedCourses-${user.id}`;
+
       const existing = JSON.parse(localStorage.getItem(finishedCoursesKey) || "[]");
-  
-      if (!existing.includes(course.title)) {
-        const updated = [...existing, course.title];
-        localStorage.setItem(finishedCoursesKey, JSON.stringify(updated));
-      }
+      const newCourse = {
+        id: course.id,
+        title: course.title,
+        image: course.image,
+      };
+      
+      const updated = [
+        ...existing.filter((c: { id: string }) => c.id !== course.id),
+        newCourse,
+      ];
+      
+      localStorage.setItem(finishedCoursesKey, JSON.stringify(updated));
+      
     }
   }, [completedPageCount, course, user]);  
   

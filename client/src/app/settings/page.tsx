@@ -10,7 +10,7 @@ export default function SettingsPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const [previewImage, setPreviewImage] = useState("/default-avatar.png");
-  const [finishedCourses, setFinishedCourses] = useState<string[]>([]);
+  const [finishedCourses, setFinishedCourses] = useState<{ id: string; title: string; image: string }[]>([]);
 
   const [formData, setFormData] = useState({
     username: "",
@@ -193,24 +193,28 @@ export default function SettingsPage() {
               </div>
 
               {/* Finished Lessons section */}
-            <div>
-              <h3 className="text-white mb-4">Finished Lessons</h3>
-              <div className="flex flex-wrap gap-2">
-                {finishedCourses.length === 0 ? (
-                  <span className="text-[#a99bb4] text-sm">No completed courses yet.</span>
-                ) : (
-                  finishedCourses.map((title, index) => (
-                    <span
-                      key={index}
-                      className="bg-[#8a4bdb] text-white text-xs px-3 py-1 rounded-full"
-                    >
-                      {title}
-                    </span>
-                 ))
-                )}
+              <div>
+                <h3 className="text-white mb-4">Finished Course</h3>
+                <div className="flex flex-wrap gap-4">
+                  {finishedCourses
+                    .filter(course => course.image) // Only keep courses with an image
+                    .map((course, index) => (
+                      <div
+                        key={index}
+                        className="w-24 overflow-hidden rounded-xl shadow-md bg-gray-200 flex flex-col items-center"
+                      >
+                        <div className="w-full h-16">
+                          <img
+                            src={course.image}
+                            alt={course.title}
+                            className="object-cover w-full h-full"
+                          />
+                        </div>
+                        <p className="text-xs text-center p-1 text-black">{course.title}</p>
+                      </div>
+                  ))}
+                </div>
               </div>
-            </div>
-
             </div>
 
             {/* Profile Picture Upload */}
