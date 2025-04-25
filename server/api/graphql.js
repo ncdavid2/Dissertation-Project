@@ -312,6 +312,7 @@ const resolvers = {
     },
 
     updateUser: async (_, { id, username, password, bio, notes, profileImage }, { userId }) => {
+      console.log(id, username, password, bio, notes, userId);
       if (!userId) {
         throw new Error("Not authenticated");
       }
@@ -517,6 +518,7 @@ const server = new ApolloServer({
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
       console.log("Decoded JWT:", decoded);
+      console.log("JWT_SECRET inside context:", process.env.JWT_SECRET);
       return { userId: decoded.userId };
     } catch (err) {
       console.log("JWT verification error:", err);
@@ -528,14 +530,18 @@ const server = new ApolloServer({
 const apolloHandler = startServerAndCreateNextHandler(server);
 
 export default async function handler(req, res) {
+  console.log("Request received:", req.method, req.url);
+
   res.setHeader('Access-Control-Allow-Origin', process.env.PRODUCTION_URL);
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
   if (req.method === 'OPTIONS') {
+    console.log(">>> Preflight request (OPTIONS)");
     res.status(200).end();
     return;
   }
 
+  console.log("About to call Apollo handler");
   return apolloHandler(req, res);
 }
