@@ -22,10 +22,19 @@ export default function Page() {
 
   const [searchQuery, setSearchQuery] = useState("");
 
+  const [showRegisterMessage, setShowRegisterMessage] = useState(false);
+
   const filteredCourses = courses.filter(course =>
     course.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
   
+  const showRegisterToast = () => {
+    setShowRegisterMessage(true);
+    setTimeout(() => {
+      setShowRegisterMessage(false);
+    }, 10000);
+  };  
+
   const paginatedCourses =
     activeView === "courses"
       ? filteredCourses
@@ -164,14 +173,23 @@ export default function Page() {
                   key={i}
                   className="text-left w-full p-4 bg-gradient-to-br from-purple-500/20 to-purple-600/20 rounded-lg border border-transparent transition hover:border-purple-300 hover:bg-purple-500/30 focus:outline-none focus:ring-2 focus:ring-purple-400"
                   onClick={() => {
-                    if (view === "courses") setActiveView(view);
-                    if (view === "notes") {
+                    if (view === "courses") {
+                      setActiveView(view);
+                    } else if (view === "notes") {
                       if (user) {
                         router.push("main_page/notes");
+                      } else {
+                        showRegisterToast();
                       }
                     }
-                    if (view === "practice") router.push("main_page/practice");
-                  }}
+                    else if (view === "practice") {
+                      if (user) {
+                        router.push("main_page/practice");
+                      } else {
+                        showRegisterToast();
+                      }
+                    }                    
+                  }}                  
                 >
                   <div className="flex items-center gap-3">
                     <Icon className="h-6 w-6 text-purple-300" />
@@ -205,7 +223,16 @@ export default function Page() {
               {paginatedCourses.map((course, i) => (
                 <div
                   key={i}
-                  onClick={() => router.push(`/course_overview/${course.id}`)}
+                  onClick={() => {
+                    if (user) {
+                      router.push(`/course_overview/${course.id}`);
+                    } else {
+                      setShowRegisterMessage(true);
+                      setTimeout(() => {
+                        setShowRegisterMessage(false);
+                      }, 10000); // 10 seconds
+                    }
+                  }}                  
                   className="p-4 bg-purple-500/10 border-0 rounded-lg hover:bg-purple-500/20 transition-colors cursor-pointer"
                 >
                   <div className="h-32 rounded-md overflow-hidden mb-3">
@@ -245,6 +272,19 @@ export default function Page() {
           </div>
         )}
       </div>
+
+      {/* Message if the User is not Logged in and trys to open a Course */}
+      {showRegisterMessage && (
+        <div className="fixed bottom-6 right-6 bg-purple-700 text-white py-4 px-6 rounded-lg shadow-lg flex flex-col items-center animate-fade-in-out">
+          <span className="mb-2 text-center">Please register to access!</span>
+          <button
+            onClick={() => router.push("/authentication/register")}
+            className="bg-white text-purple-700 font-semibold px-4 py-2 rounded hover:bg-gray-200 transition"
+          >
+            Register
+          </button>
+        </div>
+      )}
 
       {/* Footer */}
       <footer className="py-4 text-center mt-auto">

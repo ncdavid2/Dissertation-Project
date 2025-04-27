@@ -252,7 +252,8 @@ export default function RegisterPage() {
                 {/* Submit Button */}
                 <button
                   type="submit"
-                  className="w-full p-2 rounded bg-purple-600 hover:bg-purple-700 text-white"
+                  className={`w-full p-2 rounded ${formData.email.includes("@") ? "bg-purple-600 hover:bg-purple-700" : "bg-gray-400 cursor-not-allowed"} text-white`}
+                  disabled={!formData.email.includes("@")}
                 >
                   Register
                 </button>
