@@ -9,6 +9,14 @@ import jwt from 'jsonwebtoken';
 import { v2 as cloudinary } from 'cloudinary';
 import nodemailer from 'nodemailer';
 
+const express = require("express");
+const emailReminderRoute = require("../routes/emailReminder");
+
+const app = express();
+app.use(express.json());
+
+app.use("/api/send-reminder", emailReminderRoute);
+
 dotenv.config();
 console.log("JWT_SECRET from env:", process.env.JWT_SECRET);
 

@@ -29,6 +29,26 @@ export default function CoursePage() {
   }, [user, course]);  
 
   useEffect(() => {
+    if (
+      user &&
+      course &&
+      completedPageCount < course.pages.length &&
+      user.role === "student"
+    ) {
+      fetch("http://localhost:4000/api/send-reminder", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: user.email,
+          courseTitle: course.title,
+        }),
+      }).catch((err) => console.error("Failed to send reminder:", err));
+    }
+  }, [user, course, completedPageCount]);  
+
+  useEffect(() => {
     if (user && course && completedPageCount === course.pages.length) {
       const finishedCoursesKey = `finishedCourses-${user.id}`;
 
