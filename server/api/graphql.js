@@ -7,15 +7,6 @@ import dotenv from 'dotenv';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { v2 as cloudinary } from 'cloudinary';
-import nodemailer from 'nodemailer';
-
-const express = require("express");
-const emailReminderRoute = require("../routes/emailReminder");
-
-const app = express();
-app.use(express.json());
-
-app.use("/api/send-reminder", emailReminderRoute);
 
 dotenv.config();
 console.log("JWT_SECRET from env:", process.env.JWT_SECRET);
@@ -289,7 +280,6 @@ const resolvers = {
       });
 
       await newUser.save();
-      await sendWelcomeEmail(newUser.email, newUser.username);
       return newUser;
     },
 
@@ -513,29 +503,6 @@ const resolvers = {
       return true;
     },
   },
-};
-
-const transporter = nodemailer.createTransport({
-  service: 'Gmail', // or use a service like SendGrid, Outlook, Gmail etc.
-  auth: {
-    user: process.env.EMAIL_USER, 
-    pass: process.env.EMAIL_PASS, 
-  },
-});
-
-export const sendWelcomeEmail = async (to, username) => {
-  const mailOptions = {
-    from: process.env.EMAIL_USER,
-    to,
-    subject: 'Welcome to Our Platform!',
-    html: `
-      <h1>Welcome, ${username}!</h1>
-      <p>We're excited to have you onboard.</p>
-      <p>Feel free to explore our courses and start learning today.</p>
-    `,
-  };
-
-  await transporter.sendMail(mailOptions);
 };
 
 const server = new ApolloServer({
