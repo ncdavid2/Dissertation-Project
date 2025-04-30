@@ -9,7 +9,7 @@ import config from "../../../default/config";
 export default function SettingsPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [user, setUser] = useState<User | null>(null);
-  const [previewImage, setPreviewImage] = useState("/default-avatar.png");
+  const [previewImage, setPreviewImage] = useState("../../../images/placeholder.jpg");
   const [finishedCourses, setFinishedCourses] = useState<{ id: string; title: string; image: string }[]>([]);
 
   const [formData, setFormData] = useState({
@@ -32,7 +32,7 @@ export default function SettingsPage() {
         password: "",
         profileImage: parsedUser.profileImage || "",
       });
-      setPreviewImage(parsedUser.profileImage || "/default-avatar.png");
+      setPreviewImage(parsedUser.profileImage || "../../../images/placeholder.jpg");
   
       const finished = localStorage.getItem(`finishedCourses-${parsedUser.id}`);
       if (finished) {
