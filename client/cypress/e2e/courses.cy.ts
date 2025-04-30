@@ -1,10 +1,8 @@
-describe('Login and Save Notes', () => {
+describe('Login and Press Courses Button', () => {
     const testUser = {
       email: 'ncdavid@web.de',
       password: '123',
     };
-  
-    const testNoteContent = `Test note written at ${new Date().toISOString()}`;
   
     it('logs in and saves notes', () => {
       cy.visit('http://localhost:3000/authentication/login');
