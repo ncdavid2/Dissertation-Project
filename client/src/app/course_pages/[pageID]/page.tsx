@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams, useSearchParams, useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { Page, Question, QuestionInput, Step, User } from "@/types/types";
 import config from "../../../../default/config";
 
