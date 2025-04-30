@@ -8,6 +8,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { v2 as cloudinary } from 'cloudinary';
 import nodemailer from 'nodemailer';
+import '../utils/reminderAfterWeek.js'
 
 dotenv.config();
 console.log("JWT_SECRET from env:", process.env.JWT_SECRET);
@@ -307,6 +308,9 @@ const resolvers = {
 
       console.log("JWT payload:", { userId: user.id });
       console.log("JWT secret used:", process.env.JWT_SECRET);
+
+      user.lastLogin = new Date();
+      await user.save();
 
       const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, {
         expiresIn: "1h",

@@ -8,6 +8,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { v2 as cloudinary } from 'cloudinary';
 import nodemailer from 'nodemailer';
+import './utils/reminderAfterWeek.js'
 
 dotenv.config();
 

@@ -8,6 +8,9 @@ cron.schedule('0 9 * * *', async () => {
   const oneWeekAgo = new Date();
   oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
 
+  //This is to test if the email comes after 2 Minutes
+  //const oneMinuteAgo = new Date(Date.now() - 60 * 1000); // 1 minute ago
+
   const inactiveUsers = await User.find({
     lastLogin: {
       $lte: oneWeekAgo
