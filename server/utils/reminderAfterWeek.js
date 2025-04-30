@@ -1,6 +1,6 @@
 import cron from 'node-cron';
 import User from '../models/Users.js';
-import { sendLoginReminderEmail } from '../server.js';
+import { sendLoginReminderEmail } from '../api/graphql.js';
 
 cron.schedule('0 9 * * *', async () => {
   console.log("Checking for inactive users...");
