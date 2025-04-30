@@ -181,6 +181,10 @@ const typeDefs = `
   extend type Mutation {
     markPageComplete(courseId: ID!, pageId: ID!): Boolean
   }
+
+  type Mutation {
+    sendCourseReminder(courseId: ID!): Boolean!
+  }
     
   type Mutation {
     deleteCourse(id: ID!): Boolean!
@@ -504,6 +508,17 @@ const resolvers = {
         
       return true;
     },
+
+    sendCourseReminder: async (_, { courseId }, { userId }) => {
+      if (!userId) throw new Error("Authentication required");
+        
+      const user = await User.findById(userId);
+      const course = await Course.findById(courseId);
+      if (!user || !course) throw new Error("User or course not found");
+        
+      await sendCourseReminderEmail(user.email, user.username, course.title);
+      return true;
+    }, 
   },
 };
 
@@ -524,6 +539,38 @@ export const sendWelcomeEmail = async (to, username) => {
       <h1>Welcome, ${username}!</h1>
       <p>We're excited to have you onboard.</p>
       <p>Feel free to explore our courses and start learning today.</p>
+    `,
+  };
+
+  await transporter.sendMail(mailOptions);
+};
+
+export const sendCourseReminderEmail = async (to, username, courseTitle) => {
+  const mailOptions = {
+    from: process.env.EMAIL_USER,
+    to,
+    subject: `Don't forget to complete ${courseTitle}`,
+    html: `
+      <h1>Hi ${username},</h1>
+      <p>We noticed you left before completing <strong>${courseTitle}</strong>.</p>
+      <p>Pick up right where you left off and finish the course to continue your learning journey!</p>
+      <a href="https://dissertation-project-client.vercel.app/">Go to Courses</a>
+    `,
+  };
+
+  await transporter.sendMail(mailOptions);
+};
+
+export const sendLoginReminderEmail = async (to, username) => {
+  const mailOptions = {
+    from: process.env.EMAIL_USER,
+    to,
+    subject: `We miss you at LearningPulse!`,
+    html: `
+      <h1>Hey ${username},</h1>
+      <p>It's been a while since your last visit.</p>
+      <p>Continue where you left off and boost your learning!</p>
+      <a href="https://dissertation-project-client.vercel.app">Return to LearningPulse</a>
     `,
   };
 

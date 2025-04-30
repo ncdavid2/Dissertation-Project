@@ -10,12 +10,13 @@ const UserSchema = new mongoose.Schema({
     notes: {type: String, required: false},
     profileImage: { type: String, default: "" },
     role: { type: String, enum: ["student", "teacher"], default: "student" },
+    lastLogin: { type: Date },
     progress: [
         {
           courseId: { type: mongoose.Schema.Types.ObjectId, ref: "Course" },
           completedPages: [{ type: mongoose.Schema.Types.ObjectId }]
         }
     ]      
-});
+}, { timestamps: true });
 
 export default mongoose.model("User", UserSchema);

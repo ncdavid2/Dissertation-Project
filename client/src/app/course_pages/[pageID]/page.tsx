@@ -17,8 +17,8 @@ export default function PageViewer() {
   const [user, setUser] = useState<User| null>(null);
   const [completedPages, setCompletedPages] = useState<string[]>([]);
 
-  const searchParams = useSearchParams();
-  const courseId = searchParams.get("courseId");
+  const courseId = page?.course?.id;
+
 
   useEffect(() => {
     if (!user) return;
@@ -171,6 +171,37 @@ export default function PageViewer() {
     );
   }
 
+  const sendReminderAndNavigateHome = async () => {
+    if (!courseId) {
+      router.push("/");
+      return;
+    }
+  
+    const token = localStorage.getItem("token");
+  
+    try {
+      await fetch(config.BACKEND_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          query: `
+            mutation SendCourseReminder($courseId: ID!) {
+              sendCourseReminder(courseId: $courseId)
+            }
+          `,
+          variables: { courseId },
+        }),
+      });
+    } catch (err) {
+      console.error("Failed to send reminder email:", err);
+    } finally {
+      router.push(`/course_overview/${courseId}`);
+    }
+  };
+
   const allQuestionsSubmitted = () => {
     if (!page?.questions?.length) return true;
     return page.questions.every((_: QuestionInput, i: number) => submittedQuestions[i]);
@@ -182,14 +213,16 @@ export default function PageViewer() {
     <div className="min-h-screen bg-[#2A2438] p-6 flex flex-col items-center">
       <div className="w-full max-w-3xl bg-purple-500/10 rounded-xl shadow-lg p-6 text-white relative">
         <button
-          onClick={() =>
-            router.push(courseId ? `/course_overview/${courseId}` : "/")
-          }
+          onClick={() => {
+            const confirmed = window.confirm("Are you sure you want to leave this page and return home?");
+            if (confirmed) {
+              sendReminderAndNavigateHome();
+            }
+          }}
           className="text-purple-300 text-lg font-medium mb-4"
         >
           Home
         </button>
-
         {user?.role === "teacher" && (
           <button
             data-cy="edit-Video-Page"
@@ -250,7 +283,18 @@ export default function PageViewer() {
                   </p>
                   <div className="space-y-2">
                     {q.answers.map((ans: string, idx: number) => (
-                      <label key={idx} className="flex items-center space-x-2">
+                      <label
+                        key={idx}
+                        className={`flex items-center space-x-2 p-1 rounded ${
+                          isSubmitted
+                            ? idx === q.correctAnswerIndex
+                              ? "bg-green-200"
+                              : idx === selectedAnswers[i]
+                              ? "bg-red-200"
+                              : ""
+                            : ""
+                        }`}
+                      > 
                         <input
                           type="checkbox"
                           data-testid={`question-${i}-answer-${idx}`}
