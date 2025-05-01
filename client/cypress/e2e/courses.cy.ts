@@ -1,4 +1,4 @@
-describe('Login and Press Courses Button', () => {
+describe('Login and Save Notes', () => {
     const testUser = {
       email: 'ncdavid@web.de',
       password: '123',
@@ -13,5 +13,5 @@ describe('Login and Press Courses Button', () => {
       
       cy.get('button').contains('Courses').click();
     });
-  });
+});
   

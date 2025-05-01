@@ -1,6 +1,5 @@
 describe('Teacher creates a course Page', () => {
-    const courseId = '67fbe7076cd014f5b1069cb5';
-  
+      
     const teacherUser = {
       email: 'Teach@test.com',
       password: '123',
