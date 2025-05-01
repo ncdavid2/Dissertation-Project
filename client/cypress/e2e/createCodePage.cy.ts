@@ -15,7 +15,7 @@ describe('Teacher creates a course Page', () => {
   
       cy.get('button[aria-label="Go to page 2"]').click();
   
-      cy.get('section').find('div.cursor-pointer').first().click();
+      cy.get('section').find('div.cursor-pointer').contains('Test Course').click();
   
       cy.get('[data-cy="add-page-button"]').click();
   

@@ -32,10 +32,6 @@ describe('Course Flow Automation', () => {
 
       cy.wait(1000);
 
-      cy.get('[data-testid="submit-question-submit"]').click();
-
-      cy.wait(2000);
-
       cy.get('[data-testid="finish-course"]').click();
   });
 });

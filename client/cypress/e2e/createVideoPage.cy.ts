@@ -17,7 +17,7 @@ describe('Teacher creates a course Page', () => {
 
       cy.get('section')
       .find('div.cursor-pointer')
-      .first()
+      .contains('Test Course')
       .click();
 
       cy.get('[data-cy="add-page-button"]').click();

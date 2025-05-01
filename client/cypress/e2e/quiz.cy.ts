@@ -24,8 +24,24 @@ describe('Practice Question Flow', () => {
         .click();
   
       cy.contains('Submit').click();
+      cy.contains('Next Question').click();
+
+      cy.get('button')
+        .contains(/.+/) 
+        .first()
+        .click();
+
+      cy.contains('Submit').click();
+      cy.contains('Next Question').click();
+
+      cy.get('button')
+        .contains(/.+/) 
+        .first()
+        .click();
+
+      cy.contains('Submit').click();
   
-      cy.contains('Done').click();
+      cy.contains('See Results').click();
     });
   });
   
